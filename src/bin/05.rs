@@ -1,5 +1,3 @@
-#![feature(slice_split_once)]
-
 advent_of_code::solution!(5);
 
 // page 0 must be somewhere before page 1 in a update
@@ -45,9 +43,18 @@ impl Update {
     }
 }
 
+#[inline]
+pub fn split_once<F, T>(arr: &[T], pred: F) -> Option<(&[T], &[T])>
+where
+    F: FnMut(&T) -> bool,
+{
+    let index = arr.iter().position(pred)?;
+    Some((&arr[..index], &arr[index + 1..]))
+}
+
 fn parse_input(input: &str) -> (Vec<OrderingRule>, Vec<Update>) {
     let lines = input.lines().collect::<Vec<_>>();
-    let (rules, updates) = lines.split_once(|line| *line == "").unwrap();
+    let (rules, updates) = split_once(&lines, |line| *line == "").unwrap();
 
     let rules: Vec<OrderingRule> = rules
         .into_iter()
