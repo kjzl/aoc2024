@@ -6,8 +6,7 @@ advent_of_code::solution!(5);
 #[derive(Debug)]
 pub struct OrderingRule(u64, u64);
 
-pub struct UpdateError<'a> {
-    rule: &'a OrderingRule,
+pub struct UpdateError {
     p1_idx: usize,
     p2_idx: usize,
 }
@@ -21,10 +20,7 @@ impl Update {
         self.first_idx_of_page_not_in_order(rules).is_none()
     }
 
-    fn first_idx_of_page_not_in_order<'a, 'b>(
-        &'b self,
-        rules: &'a [OrderingRule],
-    ) -> Option<UpdateError<'a>> {
+    fn first_idx_of_page_not_in_order(&self, rules: &[OrderingRule]) -> Option<UpdateError> {
         for rule in rules.iter() {
             let page_indices = [
                 self.0.iter().position(|page| *page == rule.0),
@@ -32,11 +28,7 @@ impl Update {
             ];
             if let [Some(p1_idx), Some(p2_idx)] = page_indices {
                 if p1_idx > p2_idx {
-                    return Some(UpdateError {
-                        rule,
-                        p1_idx,
-                        p2_idx,
-                    });
+                    return Some(UpdateError { p1_idx, p2_idx });
                 }
             }
         }
